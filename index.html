@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>E-Commerce Portal (HTML/CSS/JS)</title>
+  <style>
+    :root{--accent:#0ea5a4;--muted:#6b7280;--bg:#f8fafc}
+    body{font-family:Inter,system-ui,Arial;margin:0;background:var(--bg);color:#0f172a}
+    header{background:white;box-shadow:0 2px 6px rgba(15,23,42,.06);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+    .brand{font-weight:700;color:var(--accent)}
+    nav a{margin:0 8px;color:#0f172a;text-decoration:none;font-weight:600}
+    main{padding:20px;max-width:1100px;margin:18px auto}
+    .card{background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(2,6,23,.04);margin-bottom:16px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .product{border:1px solid #eef2f7;border-radius:8px;padding:12px}
+    button{background:var(--accent);color:white;border:0;padding:8px 12px;border-radius:6px;cursor:pointer}
+    .muted{color:var(--muted)}
+    form .row{margin-bottom:10px}
+    input,textarea,select{width:100%;padding:8px;border:1px solid #e6edf3;border-radius:6px}
+    .errors{color:#b91c1c;font-size:13px;margin-top:6px}
+    .topbar{display:flex;gap:12px;align-items:center}
+    .link-like{background:transparent;border:0;color:var(--accent);cursor:pointer;font-weight:600}
+    .list{list-style:none;padding:0;margin:0}
+    .list li{padding:8px;border-bottom:1px dashed #eef2f7}
+    footer{text-align:center;color:var(--muted);padding:18px}
+    @media (max-width:600px){header{padding:10px}main{padding:12px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">ShopEasy</div>
+    <nav>
+      <a href="#" data-route="home">Home</a>
+      <a href="#" data-route="products">Products</a>
+      <a href="#" data-route="about">About Us</a>
+      <a href="#" data-route="contact">Contact Us</a>
+    </nav>
+    <div class="topbar">
+      <div id="user-welcome" class="muted">Not signed in</div>
+      <button id="btn-login" class="link-like">Login</button>
+      <button id="btn-register" class="link-like">Register</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Views -->
+    <section id="view-home" class="card">
+      <h2>Welcome to ShopEasy</h2>
+      <p class="muted">A simple single-file demo of an E-Commerce portal using HTML, CSS and vanilla JS.</p>
+      <div class="grid" id="featured"></div>
+    </section>
+
+    <section id="view-products" class="card" style="display:none">
+      <h3>Products</h3>
+      <div class="grid" id="products-grid"></div>
+    </section>
+
+    <section id="view-about" class="card" style="display:none">
+      <h3>About Us</h3>
+      <p>ShopEasy is a demo store built to demonstrate navigation, validation and common e-commerce features using plain HTML/CSS/JS.</p>
+    </section>
+
+    <section id="view-contact" class="card" style="display:none">
+      <h3>Contact Us</h3>
+      <form id="contact-form">
+        <div class="row"><label>Name<input name="name"></label></div>
+        <div class="row"><label>Email<input name="email" type="email"></label></div>
+        <div class="row"><label>Message<textarea name="message" rows="4"></textarea></label></div>
+        <div class="row"><button>Send</button></div>
+        <div id="contact-feedback" class="muted"></div>
+      </form>
+    </section>
+
+    <!-- Auth modal (simple toggle view) -->
+    <section id="view-auth" class="card" style="display:none">
+      <div id="auth-forms">
+        <div id="reg-form" style="display:none">
+          <h3>Register</h3>
+          <form id="form-register">
+            <div class="row"><label>Name<input name="name" required></label><div class="errors" data-for="name"></div></div>
+            <div class="row"><label>Email<input name="email" required type="email"></label><div class="errors" data-for="email"></div></div>
+            <div class="row"><label>Password<input name="password" required type="password"></label><div class="errors" data-for="password"></div></div>
+            <div class="row"><label>Confirm Password<input name="confirm" required type="password"></label><div class="errors" data-for="confirm"></div></div>
+            <div class="row"><button>Register</button> <button type="button" id="show-login" class="link-like">Already have account?</button></div>
+            <div class="errors" data-for="general"></div>
+          </form>
+        </div>
+
+        <div id="login-form" style="display:none">
+          <h3>Login</h3>
+          <form id="form-login">
+            <div class="row"><label>Email<input name="email" required type="email"></label><div class="errors" data-for="email"></div></div>
+            <div class="row"><label>Password<input name="password" required type="password"></label><div class="errors" data-for="password"></div></div>
+            <div class="row"><button>Login</button> <button type="button" id="show-register" class="link-like">Create account</button></div>
+            <div class="errors" data-for="general"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard / User features -->
+    <section id="view-dashboard" class="card" style="display:none">
+      <h3>Your Dashboard</h3>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button data-panel="orders">Orders</button>
+        <button data-panel="wishlist">Wishlist</button>
+        <button data-panel="reviews">Comments & Reviews</button>
+        <button data-panel="care">Customer Care</button>
+        <button data-panel="reports">Reporting</button>
+        <button id="btn-logout" class="link-like">Logout</button>
+      </div>
+
+      <div id="panel-content" style="margin-top:12px"></div>
+    </section>
+
+  </main>
+
+  <footer class="card">&copy; 2025 ShopEasy — Demo E-Commerce portal using HTML/CSS/JS</footer>
+
+  <script>
+    // --- Sample data ---
+    const sampleItems = [
+      {id:101,title:'Wireless Headphones',price:1999,rating:4.4,desc:'Comfortable over-ear with noise isolation.'},
+      {id:102,title:'Smart Watch',price:3499,rating:4.1,desc:'Activity tracking + notifications.'},
+      {id:103,title:'Gaming Mouse',price:1299,rating:4.6,desc:'High DPI sensor, RGB.'}
+    ];
+
+    // --- Simple state persisted in localStorage ---
+    const state = {
+      users: JSON.parse(localStorage.getItem('se_users')||'[{"id":1,"name":"Demo User","email":"demo@example.com","password":"Demo@123"}]'),
+      currentUser: JSON.parse(localStorage.getItem('se_current')||'null'),
+      cart: JSON.parse(localStorage.getItem('se_cart')||'[]'),
+      orders: JSON.parse(localStorage.getItem('se_orders')||'[]'),
+      wishlist: JSON.parse(localStorage.getItem('se_wishlist')||'[]'),
+      comments: JSON.parse(localStorage.getItem('se_comments')||'[{"id":1,"user":"Alice","text":"Great product! Fast shipping.","rating":5}]'),
+      reports: JSON.parse(localStorage.getItem('se_reports')||'[]'),
+      care: JSON.parse(localStorage.getItem('se_care')||'[]')
+    };
+
+    function save(){
+      localStorage.setItem('se_users',JSON.stringify(state.users));
+      localStorage.setItem('se_current',JSON.stringify(state.currentUser));
+      localStorage.setItem('se_cart',JSON.stringify(state.cart));
+      localStorage.setItem('se_orders',JSON.stringify(state.orders));
+      localStorage.setItem('se_wishlist',JSON.stringify(state.wishlist));
+      localStorage.setItem('se_comments',JSON.stringify(state.comments));
+      localStorage.setItem('se_reports',JSON.stringify(state.reports));
+      localStorage.setItem('se_care',JSON.stringify(state.care));
+    }
+
+    // --- Routing / View helpers ---
+    const views = ['home','products','about','contact','auth','dashboard'];
+    function showRoute(r){
+      views.forEach(v=>document.getElementById('view-'+v).style.display=(v===r?'block':'none'));
+      // update menu active styles (simple)
+      document.querySelectorAll('nav a').forEach(a=>a.style.opacity=(a.dataset.route===r?1:0.75));
+      if(r==='home') renderFeatured();
+      if(r==='products') renderProducts();
+      if(r==='dashboard') renderDashboard();
+    }
+
+    document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showRoute(a.dataset.route)}));
+    document.getElementById('btn-login').addEventListener('click',()=>{showAuth('login')});
+    document.getElementById('btn-register').addEventListener('click',()=>{showAuth('register')});
+
+    // Auth UI
+    function showAuth(which){ showRoute('auth'); document.getElementById('reg-form').style.display=(which==='register'?'block':'none'); document.getElementById('login-form').style.display=(which==='login'?'block':'none'); }
+    document.getElementById('show-login').addEventListener('click',()=>showAuth('login'));
+    document.getElementById('show-register').addEventListener('click',()=>showAuth('register'));
+
+    // Greeting
+    function refreshUserUI(){
+      const el=document.getElementById('user-welcome');
+      if(state.currentUser){ el.textContent = 'Hello, '+state.currentUser.name; document.getElementById('btn-login').style.display='none'; document.getElementById('btn-register').style.display='none'; } else { el.textContent='Not signed in'; document.getElementById('btn-login').style.display='inline-block'; document.getElementById('btn-register').style.display='inline-block'; }
+    }
+
+    // Registration validation
+    function validateRegistration(values){
+      const errs = {};
+      if(!values.name||!values.name.trim()) errs.name='Name is required.';
+      if(!values.email||!/^\S+@\S+\.\S+$/.test(values.email)) errs.email='Valid email required.';
+      if(!values.password) errs.password='Password required.';
+      else{
+        if(values.password.length<6) errs.password='At least 6 chars.';
+        if(!/[A-Z]/.test(values.password)) errs.password='Include uppercase.';
+        if(!/[0-9]/.test(values.password)) errs.password='Include a number.';
+      }
+      if(values.password!==values.confirm) errs.confirm='Passwords do not match.';
+      if(state.users.some(u=>u.email===values.email)) errs.email='Email already registered.';
+      return errs;
+    }
+
+    // Login validation
+    function validateLogin(values){
+      const errs = {};
+      if(!values.email) errs.email='Email required.';
+      if(!values.password) errs.password='Password required.';
+      return errs;
+    }
+
+    // Register handler
+    document.getElementById('form-register').addEventListener('submit',e=>{
+      e.preventDefault(); const form=new FormData(e.target); const values={name:form.get('name'),email:form.get('email'),password:form.get('password'),confirm:form.get('confirm')};
+      const errs = validateRegistration(values); // clear errors
+      e.target.querySelectorAll('.errors').forEach(d=>d.textContent='');
+      if(Object.keys(errs).length){ for(const k in errs){ const d=e.target.querySelector('[data-for="'+k+'"]'); if(d) d.textContent=errs[k]; } return; }
+      const user = {id:Date.now(),name:values.name.trim(),email:values.email,password:values.password}; state.users.push(user); state.currentUser=user; save(); refreshUserUI(); showRoute('home'); alert('Registered & logged in.');
+    });
+
+    // Login handler
+    document.getElementById('form-login').addEventListener('submit',e=>{
+      e.preventDefault(); const form=new FormData(e.target); const values={email:form.get('email'),password:form.get('password')};
+      const errs = validateLogin(values); e.target.querySelectorAll('.errors').forEach(d=>d.textContent='');
+      if(Object.keys(errs).length){ for(const k in errs){ const d=e.target.querySelector('[data-for="'+k+'"]'); if(d) d.textContent=errs[k]; } return; }
+      const found = state.users.find(u=>u.email===values.email && u.password===values.password);
+      if(!found){ e.target.querySelector('[data-for="general"]').textContent='Incorrect email or password.'; return; }
+      state.currentUser=found; save(); refreshUserUI(); showRoute('home'); alert('Logged in.');
+    });
+
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click',()=>{ state.currentUser=null; save(); refreshUserUI(); showRoute('home'); });
+
+    // Render featured + products
+    function renderFeatured(){ const el=document.getElementById('featured'); el.innerHTML=''; sampleItems.forEach(it=>{ const c=document.createElement('div'); c.className='product'; c.innerHTML=`<h4>${it.title}</h4><p class="muted">₹${it.price} • ${it.rating}★</p><p>${it.desc}</p><div style="margin-top:8px"><button data-id="${it.id}" class="add-cart">Add to Cart</button> <button data-id="${it.id}" class="to-wish">Wishlist</button></div>`; el.appendChild(c); }); }
+    function renderProducts(){ const el=document.getElementById('products-grid'); el.innerHTML=''; sampleItems.forEach(it=>{ const c=document.createElement('div'); c.className='product'; c.innerHTML=`<h4>${it.title}</h4><p class="muted">₹${it.price} • ${it.rating}★</p><p>${it.desc}</p><div style="margin-top:8px"><button data-id="${it.id}" class="add-cart">Add to Cart</button> <button data-id="${it.id}" class="to-wish">Add to Wishlist</button></div>`; el.appendChild(c); }); }
+
+    // Product button delegation
+    document.body.addEventListener('click',e=>{
+      if(e.target.matches('.add-cart')){
+        const id = Number(e.target.dataset.id); const it = sampleItems.find(i=>i.id===id); state.cart.push(it); save(); alert('Added to cart.'); }
+      if(e.target.matches('.to-wish')){
+        const id = Number(e.target.dataset.id); const it = sampleItems.find(i=>i.id===id);
+        if(!state.currentUser){ alert('Please login to add to wishlist'); showAuth('login'); return; }
+        if(!state.wishlist.some(w=>w.id===id)) state.wishlist.push(it); save(); alert('Added to wishlist.'); }
+    });
+
+    // Contact form
+    document.getElementById('contact-form').addEventListener('submit',e=>{ e.preventDefault(); const fd=new FormData(e.target); document.getElementById('contact-feedback').textContent='Thanks, we received your message.'; e.target.reset(); });
+
+    // Dashboard
+    function renderDashboard(){ document.getElementById('panel-content').innerHTML=''; if(!state.currentUser){ document.getElementById('panel-content').innerHTML='<p class="muted">Please login to access dashboard features.</p>'; return; }
+      // default: orders panel
+      renderPanel('orders');
+    }
+    document.querySelectorAll('[data-panel]').forEach(b=>b.addEventListener('click',e=>renderPanel(e.target.dataset.panel)));
+
+    function renderPanel(name){ const out=document.getElementById('panel-content'); out.innerHTML=''; if(name==='orders'){
+      out.innerHTML=`<h4>Orders</h4>`; if(state.orders.length===0){ out.innerHTML+='<p class="muted">No orders yet. Place an order from cart.</p>'; } else { const ul=document.createElement('ul'); ul.className='list'; state.orders.forEach(o=>{ const li=document.createElement('li'); li.innerHTML=`Order #${o.id} — ${o.date} — ₹${o.total}`; ul.appendChild(li); }); out.appendChild(ul); }
+      const btn=document.createElement('button'); btn.textContent='Place order for items in cart'; btn.addEventListener('click',()=>{ if(state.cart.length===0) return alert('Cart empty'); const order={id:Date.now(),items:state.cart.slice(),date:new Date().toLocaleString(),total:state.cart.reduce((s,i)=>s+i.price,0)}; state.orders.unshift(order); state.cart=[]; save(); renderPanel('orders'); alert('Order placed.'); }); out.appendChild(btn);
+    }
+    if(name==='wishlist'){
+      out.innerHTML='<h4>Wishlist</h4>';
+      if(state.wishlist.length===0) out.innerHTML+='<p class="muted">Your wishlist is empty.</p>';
+      else{ const ul=document.createElement('ul'); ul.className='list'; state.wishlist.forEach(w=>{ const li=document.createElement('li'); li.innerHTML=`${w.title} — ₹${w.price} <button data-id="${w.id}" class="move-cart">Move to Cart</button> <button data-id="${w.id}" class="remove-wish">Remove</button>`; ul.appendChild(li); }); out.appendChild(ul); }
+      out.addEventListener('click',e=>{
+        if(e.target.matches('.move-cart')){ const id=Number(e.target.dataset.id); const it=state.wishlist.find(x=>x.id===id); state.cart.push(it); state.wishlist=state.wishlist.filter(x=>x.id!==id); save(); renderPanel('wishlist'); alert('Moved to cart'); }
+        if(e.target.matches('.remove-wish')){ const id=Number(e.target.dataset.id); state.wishlist=state.wishlist.filter(x=>x.id!==id); save(); renderPanel('wishlist'); }
+      });
+    }
+    if(name==='reviews'){
+      out.innerHTML='<h4>Comments & Reviews</h4>';
+      const form=document.createElement('form'); form.innerHTML=`<div class="row"><textarea name="text" rows="3" placeholder="Write a comment..."></textarea></div><div class="row"><label>Rating<select name="rating"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></label></div><div class="row"><button>Submit</button></div>`;
+      form.addEventListener('submit',e=>{ e.preventDefault(); if(!state.currentUser){ alert('Please login'); showAuth('login'); return; } const fd=new FormData(e.target); state.comments.unshift({id:Date.now(),user:state.currentUser.name,text:fd.get('text'),rating:Number(fd.get('rating'))}); save(); renderPanel('reviews'); }); out.appendChild(form);
+      const ul=document.createElement('ul'); ul.className='list'; state.comments.forEach(c=>{ const li=document.createElement('li'); li.innerHTML=`<strong>${c.user}</strong> — ${c.rating}★<div>${c.text}</div>`; ul.appendChild(li); }); out.appendChild(ul);
+    }
+    if(name==='care'){
+      out.innerHTML='<h4>Customer Care</h4>';
+      const form=document.createElement('form'); form.innerHTML=`<div class="row"><input name="subject" placeholder="Subject"></div><div class="row"><textarea name="message" rows="3" placeholder="Describe your issue"></textarea></div><div class="row"><button>Send to Support</button></div>`;
+      form.addEventListener('submit',e=>{ e.preventDefault(); const fd=new FormData(e.target); if(!state.currentUser){ alert('Please login to contact support'); showAuth('login'); return; } state.care.unshift({id:Date.now(),user:state.currentUser.name,subject:fd.get('subject'),message:fd.get('message'),date:new Date().toLocaleString()}); save(); renderPanel('care'); }); out.appendChild(form);
+      if(state.care.length===0) out.innerHTML+='<p class="muted">No messages yet.</p>';
+      else{ const ul=document.createElement('ul'); ul.className='list'; state.care.forEach(m=>{ const li=document.createElement('li'); li.innerHTML=`<strong>${m.user}</strong> — ${m.subject} <div class="muted">${m.date}</div><div>${m.message}</div>`; ul.appendChild(li); }); out.appendChild(ul); }
+    }
+    if(name==='reports'){
+      out.innerHTML='<h4>Reporting</h4>';
+      const form=document.createElement('form'); form.innerHTML=`<div class="row"><select name="type"><option value="bug">Bug</option><option value="abuse">Abuse</option><option value="other">Other</option></select></div><div class="row"><textarea name="desc" rows="3" placeholder="Describe"></textarea></div><div class="row"><button>Submit Report</button></div>`;
+      form.addEventListener('submit',e=>{ e.preventDefault(); if(!state.currentUser){ alert('Please login to report'); showAuth('login'); return; } const fd=new FormData(e.target); state.reports.unshift({id:Date.now(),user:state.currentUser.name,type:fd.get('type'),desc:fd.get('desc'),date:new Date().toLocaleString()}); save(); renderPanel('reports'); }); out.appendChild(form);
+      if(state.reports.length===0) out.innerHTML+='<p class="muted">No reports submitted.</p>';
+      else{ const ul=document.createElement('ul'); ul.className='list'; state.reports.forEach(r=>{ const li=document.createElement('li'); li.innerHTML=`<strong>${r.user}</strong> — ${r.type} <div class="muted">${r.date}</div><div>${r.desc}</div>`; ul.appendChild(li); }); out.appendChild(ul); }
+    }
+  }
+
+    // on load
+    refreshUserUI(); showRoute('home');
+    renderFeatured();
+
+  </script>
+</body>
+</html>
